@@ -14,6 +14,7 @@
 #include "mysql_account_session.h"
 #include "barrack_server/barrack_handler/barrack_builder.h"
 #include "mysql_commander.h"
+#include "mysql_item.h"
 
 bool mySqlLoadAccountCommanders(MySQL *self, AccountSession *accountSession, uint64_t accountId, size_t *commandersCount) {
 
@@ -36,6 +37,51 @@ bool mySqlLoadAccountCommanders(MySQL *self, AccountSession *accountSession, uin
     if (!(mySqlGetCommanders(self, accountSession->commanders))) {
         error("Cannot get commanders by accountId = %llx", accountId);
         goto cleanup;
+    }
+
+    for (int commanderIndex = 0; commanderIndex < *commandersCount; commanderIndex++) {
+
+        // Load items
+        size_t itemsCount;
+        Commander *commander = accountSession->commanders[commanderIndex];
+        Inventory *inventory = &commander->inventory;
+        if (!(mySqlRequestItems(self, commander->commanderId, &itemsCount))) {
+            error("Cannot request items for commander %d", commanderIndex);
+            goto cleanup;
+        }
+        Item *items = calloc(itemsCount, sizeof(Item));
+        if (!(mySqlGetItems(self, &items))) {
+            error("Cannot get items for commander %d", commanderIndex);
+            goto cleanup;
+        }
+
+        for (int i = 0; i < itemsCount; i++) {
+            dbg("item.itemId %d", items[i].itemId);
+            dbg("item.itemCategory %d", items[i].itemCategory);
+            inventoryAddItem(inventory, &items[i]);
+        }
+
+        inventoryPrintBag(inventory, INVENTORY_CAT_ARMOR);
+        inventoryPrintBag(inventory, INVENTORY_CAT_WEAPON);
+
+        // Load equipment
+        uint64_t slotItemIds[EQSLOT_Count];
+        if (!(mySqlGetSlotItemIds(self, commander->commanderId, slotItemIds))) {
+            error("Cannot get equipment slots for commander %d", commanderIndex);
+            goto cleanup;
+        }
+        // Equip items
+        for (int eqSlotIndex = 0; eqSlotIndex < EQSLOT_Count; eqSlotIndex++) {
+            dbg("eqslotIndex %d: %d", eqSlotIndex, slotItemIds[eqSlotIndex]);
+            if (slotItemIds[eqSlotIndex] > 0) {
+                inventoryEquipItem(inventory, slotItemIds[eqSlotIndex], eqSlotIndex);
+            }
+        }
+
+        inventoryPrintEquipment(inventory);
+
+        inventoryPrintBag(inventory, INVENTORY_CAT_ARMOR);
+        inventoryPrintBag(inventory, INVENTORY_CAT_WEAPON);
     }
 
     status = true;

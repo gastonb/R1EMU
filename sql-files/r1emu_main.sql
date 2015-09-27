@@ -133,3 +133,36 @@ CREATE TABLE IF NOT EXISTS `items` (
   KEY `item_id-commander_id` (`item_id`,`commander_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `commander_slots`
+--
+
+CREATE TABLE IF NOT EXISTS `commander_slots` (
+  `commander_slot_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `commander_id` int(10) unsigned NOT NULL,
+  `eqslot_head_top` int(11) NOT NULL,
+  `eqslot_head_middle` int(11) NOT NULL DEFAULT '0',
+  `eqslot_unkown_1` int(11) NOT NULL DEFAULT '0',
+  `eqslot_body_armor` int(11) NOT NULL DEFAULT '0',
+  `eqslot_gloves` int(11) NOT NULL DEFAULT '0',
+  `eqslot_boots` int(11) NOT NULL DEFAULT '0',
+  `eqslot_helmet` int(11) NOT NULL DEFAULT '0',
+  `eqslot_bracelet` int(11) NOT NULL DEFAULT '0',
+  `eqslot_weapon` int(11) NOT NULL DEFAULT '0',
+  `eqslot_shield` int(11) NOT NULL DEFAULT '0',
+  `eqslot_costume` int(11) NOT NULL DEFAULT '0',
+  `eqslot_unkown_3` int(11) NOT NULL,
+  `eqslot_unkown_4` int(11) NOT NULL DEFAULT '0',
+  `eqslot_unkown_5` int(11) NOT NULL DEFAULT '0',
+  `eqslot_leg_armor` int(11) NOT NULL DEFAULT '0',
+  `eqslot_unkown_6` int(11) NOT NULL DEFAULT '0',
+  `eqslot_unkown_7` int(11) NOT NULL DEFAULT '0',
+  `eqslot_ring_left` int(11) NOT NULL DEFAULT '0',
+  `eqslot_ring_right` int(11) NOT NULL DEFAULT '0',
+  `eqslot_necklace` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`commander_slot_id`),
+  KEY `commander_id` (`commander_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
