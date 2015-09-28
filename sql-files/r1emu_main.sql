@@ -45,6 +45,104 @@ END$$
 
 DELIMITER ;
 
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`r1emu`@`localhost` PROCEDURE `createCommander`(
+IN `accountId` INT, 
+IN `commanderName` VARCHAR(64),
+IN `level` INT,
+IN `gender` INT,
+IN `jobId` INT,
+IN `classId` INT,
+IN `hairId` INT,
+IN `mapId` INT,
+IN `posX` FLOAT,
+IN `posY` FLOAT,
+IN `posZ` FLOAT,
+IN `hp` FLOAT,
+IN `mp` FLOAT
+)
+    MODIFIES SQL DATA
+    COMMENT 'creates a Commander'
+BEGIN
+	DECLARE current_name VARCHAR(64);
+	DECLARE commander_id INT;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+          SET @flag = -2;
+          ROLLBACK;
+    END;
+
+    START TRANSACTION;
+
+    	SELECT commander_name INTO current_name 
+        FROM commanders
+        WHERE commander_name = commanderName
+        LIMIT 1;
+        
+        IF current_name <> "" THEN
+        	SET @flag = -1;
+            ROLLBACK;
+        ELSE
+			INSERT INTO commanders
+			(
+			`commander_name`, 
+			`account_id`, 
+			`level`, 
+			`gender`, 
+			`job_id`, 
+			`class_id`, 
+			`hair_id`,
+			`map_id`,
+			`position_x`,
+			`position_y`,
+			`position_z`,
+			`hp`,
+			`mp`
+			)
+			VALUES
+			(
+			commanderName,
+			accountId,
+			level,
+			gender,
+			jobId,
+			classId,
+			hairId,
+			mapId,
+			posX,
+			posY,
+			posZ,
+			hp,
+			mp
+			);
+			
+			SELECT LAST_INSERT_ID() INTO commander_id;
+			
+			INSERT INTO commander_slots
+			(
+			`commander_id`
+			)
+			VALUES
+			(
+			commander_id
+			);
+			
+			SET @flag = commander_id;
+			
+        END IF;
+
+
+    COMMIT;
+
+
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --

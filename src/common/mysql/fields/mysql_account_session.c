@@ -153,7 +153,7 @@ BarrackNameChangeStatus mySqlSetFamilyName(MySQL *self, uint64_t accountId, char
     MYSQL_ROW row;
 
     // Perform query to change name
-    if (mySqlQuery(self, "CALL bSetFamilyName(%llx, '%s');", accountId, familyName)) {
+    if (mySqlQuery(self, "CALL bSetFamilyName(%llu, '%s');", accountId, familyName)) {
         error("SQL Error : %s" , mysql_error(self->handle));
         goto cleanup;
     }
@@ -165,7 +165,7 @@ BarrackNameChangeStatus mySqlSetFamilyName(MySQL *self, uint64_t accountId, char
     }
 
     if (mysql_num_rows(self->result) == 0) {
-        error("MySQL: Procedure bSetFamilyName(%llx, '%s') didn't return value", accountId, familyName);
+        error("MySQL: Procedure bSetFamilyName(%llu, '%s') didn't return value", accountId, familyName);
         goto cleanup;
     }
 

@@ -84,50 +84,47 @@ cleanup:
 
 bool mySqlCommanderInsert(MySQL *self, uint64_t accountId, Commander *commanderToCreate) {
 
+    MYSQL_ROW row;
     bool status = false;
+    uint32_t commanderId;
 
-    // Insert a new commander
-    if (mySqlQuery(self, "INSERT INTO commanders "
-       "SET account_id = '%llu'"
-       ", " MYSQL_COMMANDER_FIELD_commanderName_str " = '%s'"
-       ", " MYSQL_COMMANDER_FIELD_level_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_exp_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_gender_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_job_id_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_class_id_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_hair_id_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_map_id_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_position_x_str " = %f"
-       ", " MYSQL_COMMANDER_FIELD_position_y_str " = %f"
-       ", " MYSQL_COMMANDER_FIELD_position_z_str " = %f"
-       ", " MYSQL_COMMANDER_FIELD_hp_str " = %d"
-       ", " MYSQL_COMMANDER_FIELD_mp_str " = %d",
-
-       accountId,
-       commanderToCreate->name,
-       commanderToCreate->level,
-       commanderToCreate->maxXP,
-       commanderToCreate->gender,
-       commanderToCreate->jobId,
-       commanderToCreate->classId,
-       commanderToCreate->hairId,
-       commanderToCreate->mapId,
-       commanderToCreate->pos.x, /// FIXME : Using world pos, and should be barrack pos
-       commanderToCreate->pos.y, /// FIXME : Using world pos, and should be barrack pos
-       commanderToCreate->pos.z, /// FIXME : Using world pos, and should be barrack pos
-       10,
-       10))
-    {
+    if (mySqlQuery(self,
+                   "CALL createCommander(%llu, '%s', %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %f);"
+                   , accountId, commanderToCreate->name, commanderToCreate->level
+                   , commanderToCreate->gender, commanderToCreate->jobId, commanderToCreate->classId
+                   , commanderToCreate->hairId, commanderToCreate->mapId, commanderToCreate->pos.x
+                   , commanderToCreate->pos.y, commanderToCreate->pos.z, commanderToCreate->currentHP
+                   , commanderToCreate->currentStamina
+                   )) {
         error("SQL Error : %s" , mysql_error(self->handle));
         goto cleanup;
     }
 
-    uint64_t commanderId = mysql_insert_id(self->handle);
+    // Check query results
+    if (mySqlQuery(self, "SELECT @flag;")) {
+        error("SQL Error : %s" , mysql_error(self->handle));
+        goto cleanup;
+    }
+
+    if (mysql_num_rows(self->result) == 0) {
+        error("MySQL: Procedure createCommander() didn't return value");
+        goto cleanup;
+    }
+
+    row = mysql_fetch_row(self->result);
+    commanderId = strtol(row[0], NULL, 10);
+
+    // CommanderId = -1 == NAME ALREADY EXIST
+    // CommanderId = -2 == SQL EXCEPTION
+    // CommanderId =  0 == Not used
+    // CommanderId > 0 = Commander ID
+
+    if (commanderId < 1) {
+        error("There was an error in MySQL creating a commander.");
+        goto cleanup;
+    }
 
     commanderToCreate->commanderId = commanderId;
-
-    // TODO : check last insert id
-
 
     status = true;
 
