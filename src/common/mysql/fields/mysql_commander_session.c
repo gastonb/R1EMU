@@ -28,31 +28,16 @@ bool mySqlCommanderInsertCommander(MySQL *self, Commander *commander) {
         "`bracelet_right`, `hair_type`, `last_x`, `last_y`, `last_z`, `current_xp`, "
         "`current_hp`, `current_sp`) VALUES ("
         "%u, %llu, '%s', '%s', %d, "
-        "%d, %d, %d, %d, %d, %d, %d, "
-        "%d, %d, %d, %d, %d, %d, %d, "
-        "%d, %d, %f, %f, %f, "
+        "%d, %d, %d, %f, %f, %f, "
         "%d, %d, %d)",
         commander->commanderId,
-        commander->appearance.accountId,
-        commander->appearance.commanderName,
-        commander->appearance.familyName,
-        commander->appearance.classId,
-        commander->appearance.gender,
-        commander->appearance.level,
-        commander->appearance.equipment.head_top,
-        commander->appearance.equipment.head_middle,
-        commander->appearance.equipment.necklace,
-        commander->appearance.equipment.body_armor,
-        commander->appearance.equipment.leg_armor,
-        commander->appearance.equipment.gloves,
-        commander->appearance.equipment.boots,
-        commander->appearance.equipment.weapon,
-        commander->appearance.equipment.shield,
-        commander->appearance.equipment.costume,
-        commander->appearance.equipment.bracelet,
-        commander->appearance.equipment.ring_left,
-        commander->appearance.equipment.ring_right,
-        commander->appearance.hairId,
+        commander->accountId,
+        commander->name,
+        commander->familyName,
+        commander->classId,
+        commander->gender,
+        commander->level,
+        commander->hairId,
         commander->pos.x,
         commander->pos.y,
         commander->pos.z,

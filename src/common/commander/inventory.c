@@ -246,8 +246,8 @@ bool inventoryGetEquipmentEmptySlot(EquipmentSlot slot, uint32_t *value) {
         case EQSLOT_LEG_ARMOR: *value = EMPTYEQSLOT_NoShirt; break;
         case EQSLOT_UNKOWN6: *value = EMPTYEQSLOT_NoRing; break;
         case EQSLOT_UNKOWN7: *value = EMPTYEQSLOT_NoRing; break;
-        case EQSLOT_RIGHT_LEFT: *value = EMPTYEQSLOT_NoRing; break;
-        case EQSLOT_RIGHT_RIGHT: *value = EMPTYEQSLOT_NoRing; break;
+        case EQSLOT_RING_LEFT: *value = EMPTYEQSLOT_NoRing; break;
+        case EQSLOT_RING_RIGHT: *value = EMPTYEQSLOT_NoRing; break;
         case EQSLOT_NECKLACE: *value = EMPTYEQSLOT_NoNeck; break;
         default: {
             *value = -1;

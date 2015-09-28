@@ -17,6 +17,7 @@
 #include "common/packet/packet.h"
 #include "common/packet/packet_type.h"
 #include "common/packet/packet_stream.h"
+#include "common/commander/commander_helpers.h"
 #include "common/commander/inventory.h"
 #include "common/item/item.h"
 
@@ -772,7 +773,7 @@ void zoneBuilderEnterPc(Commander *commander, zmsg_t *replyMsg) {
         uint32_t titleAchievmentId; // 24B42B1B
         uint32_t unk9; // FFFFFFFF
         uint8_t unk10; // 00
-        CommanderAppearance commander;
+        CommanderAppearance appearance;
         uint8_t partyName[48+1]; // "None"
     } replyPacket;
     #pragma pack(pop)
@@ -802,7 +803,7 @@ void zoneBuilderEnterPc(Commander *commander, zmsg_t *replyMsg) {
         replyPacket.titleAchievmentId = SWAP_UINT32(0xA1860100); // ICBT, "Hunter"
         replyPacket.unk9 = -1;
         replyPacket.unk10 = 0;
-        memcpy(&replyPacket.commander, &commander->appearance, sizeof(replyPacket.commander));
+        helperCommanderGetCommanderAppearance(commander, &replyPacket.appearance);
         strncpy(replyPacket.partyName, "None", sizeof(replyPacket.partyName));
     }
 }
@@ -1548,15 +1549,21 @@ void zoneBuilderChat(Commander *commander, uint8_t *chatText, zmsg_t *replyMsg) 
     {
         variableSizePacketHeaderInit(&replyPacket.variableSizeHeader, packetType, sizeof(replyPacket));
         replyPacket.pcId = commander->pcId;
-        memcpy(replyPacket.familyName, commander->appearance.familyName, sizeof(replyPacket.familyName));
-        memcpy(replyPacket.commanderName, commander->appearance.commanderName, sizeof(replyPacket.commanderName));
+        memcpy(replyPacket.familyName, commander->familyName, sizeof(replyPacket.familyName));
+        memcpy(replyPacket.commanderName, commander->name, sizeof(replyPacket.commanderName));
         replyPacket.unk1 = 0x4F;
-        replyPacket.jobId = commander->appearance.jobId;
+        replyPacket.jobId = commander->jobId;
         replyPacket.unk2 = 1;
-        replyPacket.gender = commander->appearance.gender;
-        replyPacket.hairId = commander->appearance.hairId;
+        replyPacket.gender = commander->gender;
+        replyPacket.hairId = commander->hairId;
         replyPacket.unk3 = 0;
-        replyPacket.headTop = commander->appearance.equipment.head_top;
+        uint32_t itemType;
+        if (commander->inventory.equippedItems[EQSLOT_HEAD_TOP]) {
+            itemType = commander->inventory.equippedItems[EQSLOT_HEAD_TOP]->itemType;
+        } else {
+            inventoryGetEquipmentEmptySlot(EQSLOT_HEAD_TOP, &itemType);
+        }
+        replyPacket.headTop = itemType;
         replyPacket.displayTime = 0;
         memcpy(replyPacket.chatText, chatText, sizeof(replyPacket.chatText));
     }
@@ -1640,7 +1647,7 @@ void zoneBuilderConnectOk(
         replyPacket.pcId = commander->pcId;
         replyPacket.unk5 = 0; // ICBT
 
-        replyPacket.appearance = commander->appearance;
+        helperCommanderGetCommanderAppearance(commander, &replyPacket.appearance);
         replyPacket.pos = commander->pos;
         replyPacket.currentXP = commander->currentXP;
         replyPacket.maxXP = commander->maxXP;

@@ -75,7 +75,7 @@ bool mySqlRequestItems(MySQL *self, uint64_t commanderId, size_t *_itemsCount) {
         ", " MYSQL_ITEM_FIELD_amount_str
         ", " MYSQL_ITEM_FIELD_position_in_inventory_str
         " FROM items "
-        "WHERE commander_id = %llx "
+        "WHERE commander_id = '%llu' "
         "ORDER BY position_in_inventory ASC ",
         commanderId))
     {
@@ -127,7 +127,7 @@ bool mySqlGetSlotItemIds(MySQL *self, uint64_t commanderId, uint64_t *slotItemId
         ", " MYSQL_SLOT_FIELD_eqslot_ring_right_str
         ", " MYSQL_SLOT_FIELD_eqslot_necklace_str
         " FROM commander_slots "
-        "WHERE commander_id = %llx "
+        "WHERE commander_id = '%llu' "
         "LIMIT 1 ",
         commanderId))
     {

@@ -79,6 +79,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../../src/common/commander/commander.h" />
+		<Unit filename="../../../src/common/commander/commander_helpers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/common/commander/commander_helpers.h" />
 		<Unit filename="../../../src/common/commander/inventory.c">
 			<Option compilerVar="CC" />
 		</Unit>

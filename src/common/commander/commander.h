@@ -27,6 +27,7 @@
 /**
  * @brief CommanderInfo is the struct of a commander.
  */
+ /*
 typedef struct CommanderEquipment {
     uint32_t head_top;
     uint32_t head_middle;
@@ -50,14 +51,17 @@ typedef struct CommanderEquipment {
     uint32_t necklace;
 } CommanderEquipment;
 #pragma pack(pop)
+*/
 
-#pragma pack(push, 1)
 /**
- * @brief CommanderAppearance is the struct of a commander sent to the client
+ * Contains all information about a commander
  */
-typedef struct CommanderAppearance
+#pragma pack(push, 1)
+typedef struct
 {
-    uint8_t commanderName[COMMANDER_NAME_SIZE+1];
+    Inventory inventory;
+
+    uint8_t name[COMMANDER_NAME_SIZE+1];
     uint8_t familyName[COMMANDER_FAMILY_NAME_SIZE];
     uint8_t unk2[7];
     uint64_t accountId;
@@ -67,62 +71,30 @@ typedef struct CommanderAppearance
     uint8_t gender;
     uint8_t unk5;
     uint32_t level;
-    CommanderEquipment equipment;
     uint8_t hairId;
     uint8_t unk6;
     uint16_t pose;
-} CommanderAppearance;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
-/**
- * Structure of variables needed for BC_COMMANDER_CREATE
- */
-typedef struct CommanderCreatePacket {
-    CommanderAppearance appearance;
-    uint64_t socialInfoId;
-    uint16_t commanderPosition;
-    uint16_t mapId;
-    uint32_t unk4;
-    uint32_t unk5;
-    uint32_t maxXP;
-    uint32_t unk6;
-    PositionXYZ pos;
-    PositionXZ dir;
-    PositionXYZ pos2;
-    PositionXZ dir2;
-    uint32_t unk8;
-} CommanderCreatePacket;
-#pragma pack(pop)
-
-/**
- * Contains all information about a commander
- */
-#pragma pack(push, 1)
-typedef struct
-{
-    CommanderAppearance appearance;
-    Inventory inventory;
-
-    PositionXYZ pos;
-
+    // Exp
     uint32_t currentXP;
     uint32_t maxXP;
 
+    // IDs
     uint32_t pcId;
     uint64_t socialInfoId;
     uint64_t commanderId;
 
+    // Stats
     uint32_t currentHP;
     uint32_t maxHP;
-
     uint16_t currentSP;
     uint16_t maxSP;
-
     uint32_t currentStamina;
     uint32_t maxStamina;
 
+    // Info
     uint16_t mapId;
+    PositionXYZ pos;
 
 } Commander;
 #pragma pack(pop)
@@ -222,14 +194,8 @@ Commander *commanderNew(void);
 bool commanderInit(Commander *commander);
 
 /**
- * @brief Initialize a commander with basic information
- */
-bool commanderApparenceInit(CommanderAppearance *appearance);
-
-/**
  * @brief Print commander basic information
  */
-void commanderAppearancePrint(CommanderAppearance *appearance);
 void commanderPrint(Commander *commander);
 
 /**

@@ -575,8 +575,6 @@ static PacketHandlerState barrackHandlerCommanderCreate(
     commanderInit(&newCommander);
     newCommander.mapId = 1002; // FIXME : Start map could be loaded from
 
-    CommanderAppearance *commanderAppearance = &newCommander.appearance;
-
     // Check name
     size_t commanderNameLen = strlen(clientPacket->commanderName);
 
@@ -607,29 +605,29 @@ static PacketHandlerState barrackHandlerCommanderCreate(
             break;
 
         case COMMANDER_JOB_WARRIOR:
-            commanderAppearance->classId = COMMANDER_CLASS_WARRIOR;
+            newCommander.classId = COMMANDER_CLASS_WARRIOR;
             break;
 
         case COMMANDER_JOB_ARCHER:
-            commanderAppearance->classId = COMMANDER_CLASS_ARCHER;
+            newCommander.classId = COMMANDER_CLASS_ARCHER;
             break;
 
         case COMMANDER_JOB_WIZARD:
-            commanderAppearance->classId = COMMANDER_CLASS_WIZARD;
+            newCommander.classId = COMMANDER_CLASS_WIZARD;
             break;
 
         case COMMANDER_JOB_CLERIC:
-            commanderAppearance->classId = COMMANDER_CLASS_CLERIC;
+            newCommander.classId = COMMANDER_CLASS_CLERIC;
             break;
     }
 
-    commanderAppearance->jobId = clientPacket->jobId;
+    newCommander.jobId = clientPacket->jobId;
 
     // Gender
     switch (clientPacket->gender) {
         case COMMANDER_GENDER_MALE:
         case COMMANDER_GENDER_FEMALE:
-            commanderAppearance->gender = clientPacket->gender;
+            newCommander.gender = clientPacket->gender;
             break;
 
         case COMMANDER_GENDER_BOTH:
@@ -641,14 +639,14 @@ static PacketHandlerState barrackHandlerCommanderCreate(
     }
 
     // Name
-    strncpy(commanderAppearance->commanderName, clientPacket->commanderName, sizeof(commanderAppearance->commanderName));
-    strncpy(commanderAppearance->familyName, accountSession->familyName, sizeof(commanderAppearance->familyName));
+    strncpy(newCommander.name, clientPacket->commanderName, sizeof(newCommander.name));
+    strncpy(newCommander.familyName, accountSession->familyName, sizeof(newCommander.familyName));
 
     // AccountID
-    commanderAppearance->accountId = session->socket.accountId;
+    newCommander.accountId = session->socket.accountId;
 
     // Hair type
-    commanderAppearance->hairId = clientPacket->hairId;
+    newCommander.hairId = clientPacket->hairId;
 
     // PCID
     // TODO : check for unicity of the generated pcId
@@ -669,7 +667,7 @@ static PacketHandlerState barrackHandlerCommanderCreate(
     info("New Commander Created!");
     info("PCID generated : %x", newCommander.pcId);
     info("SocialInfoID generated : %llx", newCommander.socialInfoId);
-    info("accountId %llx", commanderAppearance->accountId);
+    info("accountId %llx", newCommander.accountId);
 
     Commander *dupCommander = NULL;
     if (!(dupCommander = commanderDup(&newCommander))) {

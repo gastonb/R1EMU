@@ -16,6 +16,7 @@
 #include "common/packet/packet.h"
 #include "common/packet/packet_stream.h"
 #include "common/packet/packet_type.h"
+#include "common/commander/commander_helpers.h"
 #include "common/commander/inventory.h"
 #include "common/item/item.h"
 
@@ -383,8 +384,7 @@ void barrackBuilderCommanderList(
             } *curCommandersBarrackInfoPacket = packetStreamGetCurrentBuffer(&packetStream);
             #pragma pack(pop)
 
-            // fill it
-            curCommandersBarrackInfoPacket->appearance = curCommander->appearance;
+            helperCommanderGetCommanderAppearance(curCommander, &curCommandersBarrackInfoPacket->appearance);
 
             curCommandersBarrackInfoPacket->socialInfoId = curCommander->socialInfoId; // CharUniqueId?
             curCommandersBarrackInfoPacket->commanderPosition = commanderIndex + 1;
@@ -602,7 +602,7 @@ void barrackBuilderCommanderCreate(Commander *commander, uint8_t commandersCount
     BUILD_REPLY_PACKET(replyPacket, replyMsg)
     {
         serverPacketHeaderInit(&replyPacket.header, packetType);
-        replyPacket.commanderCreate.appearance = commander->appearance;
+        helperCommanderGetCommanderAppearance(commander, &replyPacket.commanderCreate.appearance);
         replyPacket.commanderCreate.mapId = commander->mapId;
         replyPacket.commanderCreate.socialInfoId = commander->socialInfoId;
         replyPacket.commanderCreate.commanderPosition = commandersCount;

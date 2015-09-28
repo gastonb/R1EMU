@@ -103,28 +103,6 @@ enum RedisGameSessionFields {
     REDIS_GAME_SESSION_commander_hairId,
     REDIS_GAME_SESSION_commander_pose,
 
-    // Equipment Session
-    REDIS_GAME_SESSION_equipment_head_top,
-    REDIS_GAME_SESSION_equipment_head_middle,
-    REDIS_GAME_SESSION_equipment_itemUnk1,
-    REDIS_GAME_SESSION_equipment_body_armor,
-    REDIS_GAME_SESSION_equipment_gloves,
-    REDIS_GAME_SESSION_equipment_boots,
-    REDIS_GAME_SESSION_equipment_helmet,
-    REDIS_GAME_SESSION_equipment_bracelet,
-    REDIS_GAME_SESSION_equipment_weapon,
-    REDIS_GAME_SESSION_equipment_shield,
-    REDIS_GAME_SESSION_equipment_costume,
-    REDIS_GAME_SESSION_equipment_itemUnk3,
-    REDIS_GAME_SESSION_equipment_itemUnk4,
-    REDIS_GAME_SESSION_equipment_itemUnk5,
-    REDIS_GAME_SESSION_equipment_leg_armor,
-    REDIS_GAME_SESSION_equipment_itemUnk6,
-    REDIS_GAME_SESSION_equipment_itemUnk7,
-    REDIS_GAME_SESSION_equipment_ring_left,
-    REDIS_GAME_SESSION_equipment_ring_right,
-    REDIS_GAME_SESSION_equipment_necklace,
-
     // CommanderInfo Info Session
     REDIS_GAME_SESSION_commander_posX,
     REDIS_GAME_SESSION_commander_posY,

@@ -13,44 +13,28 @@
 
 #include "commander.h"
 
-bool commanderEquipmentInit(CommanderEquipment *equipment) {
-    equipment->head_top = 2;
-    equipment->head_middle = 2;
-    equipment->itemUnk1 = 4;
-    equipment->body_armor = 0x81a9d;
-    equipment->gloves = 6;
-    equipment->boots = 7;
-    equipment->helmet = 0x2710;
-    equipment->bracelet = 0x2af8;
-    equipment->weapon = 0x3118d;
-    equipment->shield = 0x98967c;
-    equipment->costume = 4;
-    equipment->itemUnk3 = 9;
-    equipment->itemUnk4 = 9;
-    equipment->itemUnk5 = 4;
-    equipment->leg_armor = 0x7f38d;
-    equipment->itemUnk6 = 9;
-    equipment->itemUnk7 = 9;
-    equipment->ring_left = 9;
-    equipment->ring_right = 9;
-    equipment->necklace = 0xa;
+bool commanderEquipmentInit(uint32_t *equipment) {
 
-    return true;
-}
-
-bool commanderApparenceInit(CommanderAppearance *commander) {
-    memset(commander, 0, sizeof(*commander));
-
-    commander->accountId = -1;
-    commander->classId = COMMANDER_CLASS_CLERIC;
-    commander->unk4 = SWAP_UINT16(0x2220); // ICBT
-    commander->jobId = COMMANDER_JOB_CLERIC; // Cleric
-    commander->gender = COMMANDER_GENDER_FEMALE; // Female
-    commander->unk5 = 0; // ICBT
-    commander->level = 1;
-    commanderEquipmentInit(&commander->equipment);
-    commander->hairId = 0x10;
-    commander->pose = SWAP_UINT16(0x0000); // Idle (ICBT)
+    equipment[EQSLOT_HEAD_TOP] = 2;
+    equipment[EQSLOT_HEAD_MIDDLE] = 2;
+    equipment[EQSLOT_UNKOWN1] = 4;
+    equipment[EQSLOT_BODY_ARMOR] = 0x81a9d;
+    equipment[EQSLOT_GLOVES] = 6;
+    equipment[EQSLOT_BOOTS] = 7;
+    equipment[EQSLOT_HELMET] = 0x2710;
+    equipment[EQSLOT_BRACELET] = 0x2af8;
+    equipment[EQSLOT_WEAPON] = 0x3118d;
+    equipment[EQSLOT_SHIELD] = 0x98967c;
+    equipment[EQSLOT_COSTUME] = 4;
+    equipment[EQSLOT_UNKOWN3] = 9;
+    equipment[EQSLOT_UNKOWN4] = 9;
+    equipment[EQSLOT_UNKOWN5] = 4;
+    equipment[EQSLOT_LEG_ARMOR] = 0x7f38d;
+    equipment[EQSLOT_UNKOWN6] = 9;
+    equipment[EQSLOT_UNKOWN7] = 9;
+    equipment[EQSLOT_RING_LEFT] = 9;
+    equipment[EQSLOT_RING_RIGHT] = 9;
+    equipment[EQSLOT_NECKLACE] = 0xa;
 
     return true;
 }
@@ -88,10 +72,15 @@ Commander *commanderDup(Commander *src) {
 bool commanderInit(Commander *commander) {
     memset(commander, 0, sizeof(*commander));
 
-    if (!(commanderApparenceInit(&commander->appearance))) {
-        error("Cannot initialize commander appearance.");
-        return false;
-    }
+    commander->accountId = -1;
+    commander->classId = COMMANDER_CLASS_CLERIC;
+    commander->unk4 = SWAP_UINT16(0x2220); // ICBT
+    commander->jobId = COMMANDER_JOB_CLERIC; // Cleric
+    commander->gender = COMMANDER_GENDER_FEMALE; // Female
+    commander->unk5 = 0; // ICBT
+    commander->level = 1;
+    commander->hairId = 0x10;
+    commander->pose = SWAP_UINT16(0x0000); // Idle (ICBT)
 
     commander->pos = PositionXYZ_decl(27.0, 30.0, 29.0);
     commander->currentXP = 0;
@@ -114,7 +103,8 @@ bool commanderInit(Commander *commander) {
     return true;
 }
 
-void commanderEquipmentPrint(CommanderEquipment *equipment) {
+void commanderEquipmentPrint(uint32_t *equipment) {
+    /*
     dbg("head_top = %d (%x)", equipment->head_top, equipment->head_top);
     dbg("head_middle = %d (%x)", equipment->head_middle, equipment->head_middle);
     dbg("itemUnk1 = %d (%x)", equipment->itemUnk1, equipment->itemUnk1);
@@ -135,25 +125,21 @@ void commanderEquipmentPrint(CommanderEquipment *equipment) {
     dbg("ring_left = %d (%x)", equipment->ring_left, equipment->ring_left);
     dbg("ring_right = %d (%x)", equipment->ring_right, equipment->ring_right);
     dbg("necklace = %d (%x)", equipment->necklace, equipment->necklace);
-}
-
-void commanderAppearancePrint(CommanderAppearance *appearance) {
-    dbg("commanderName = %s", appearance->commanderName);
-    dbg("familyName = %s", appearance->familyName);
-    dbg("accountId = %llu (%llx)", appearance->accountId, appearance->accountId);
-    dbg("classId = %d (%x)", appearance->classId, appearance->classId);
-    dbg("unk4 = %d (%x)", appearance->unk4, appearance->unk4);
-    dbg("jobId = %d (%x)", appearance->jobId, appearance->jobId);
-    dbg("gender = %d (%x)", appearance->gender, appearance->gender);
-    dbg("unk5 = %d (%x)", appearance->unk5, appearance->unk5);
-    dbg("level = %d (%x)", appearance->level, appearance->level);
-    commanderEquipmentPrint(&appearance->equipment);
-    dbg("hairId = %d (%x)", appearance->hairId, appearance->hairId);
-    dbg("pose = %d (%x)", appearance->pose, appearance->pose);
+    */
 }
 
 void commanderPrint(Commander *commander) {
-    commanderAppearancePrint(&commander->appearance);
+    dbg("commanderName = %s", commander->name);
+    dbg("familyName = %s", commander->familyName);
+    dbg("accountId = %llu (%llx)", commander->accountId, commander->accountId);
+    dbg("classId = %d (%x)", commander->classId, commander->classId);
+    dbg("unk4 = %d (%x)", commander->unk4, commander->unk4);
+    dbg("jobId = %d (%x)", commander->jobId, commander->jobId);
+    dbg("gender = %d (%x)", commander->gender, commander->gender);
+    dbg("unk5 = %d (%x)", commander->unk5, commander->unk5);
+    dbg("level = %d (%x)", commander->level, commander->level);
+    dbg("hairId = %d (%x)", commander->hairId, commander->hairId);
+    dbg("pose = %d (%x)", commander->pose, commander->pose);
     dbg("posX = %f %f %f (%x %x %x)",
          commander->pos.x, commander->pos.y, commander->pos.z,
          commander->pos.x, commander->pos.y, commander->pos.z);
